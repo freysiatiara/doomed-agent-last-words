@@ -52,6 +52,16 @@ def main():
     with open(path, "w", encoding="utf-8", newline="\n") as handle:
         handle.write(text)
     os.chmod(path, 0o644)
+    # Read-back verification: the bytes on disk must match what we wrote.
+    with open(path, "r", encoding="utf-8", newline="") as handle:
+        written = handle.read()
+    if written != text:
+        print(
+            "error: read-back mismatch: file holds %d chars, expected %d"
+            % (len(written), len(text)),
+            file=sys.stderr,
+        )
+        return 1
     return 0
 
 
